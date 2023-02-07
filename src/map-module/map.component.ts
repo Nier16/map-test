@@ -11,15 +11,14 @@ import {Address} from "./shared/models/adresse.model";
 export class MapComponent implements OnChanges, AfterViewInit {
     @ViewChild('map') private mapContainer!: ElementRef<HTMLElement>;
     @Input('address') address!: Address;
-    @Input('apiKey') apiKey!: string;
     @Input('zoom') zoom: number = 19;
 
     constructor(private addressService: AddressService) {
     }
 
     ngOnChanges(changes: SimpleChanges) {
-        if (!this.address || !this.apiKey) {
-            throw Error('You must chose an address and provide API_KEY');
+        if (!this.address) {
+            throw Error('You must chose an address');
         }
         this.recalculate();
     }
@@ -30,7 +29,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
 
 
     recalculate() {
-        if (this.mapContainer && this.address && this.apiKey) {
+        if (this.mapContainer && this.address) {
             this.addressService.getAddressDetailsGouv(this.address).subscribe(addressDetails => {
                 this.initMap(addressDetails.lon, addressDetails.lat, this.zoom);
             });
