@@ -1,21 +1,22 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 
-import {AppComponent} from './app.component';
+import {MapComponent} from './map.component';
 import {HttpClientModule} from "@angular/common/http";
-import {MapModule} from "../map-module/map.module";
 
 @NgModule({
     declarations: [
-        AppComponent
+        MapComponent
     ],
     imports: [
         BrowserModule,
-        HttpClientModule,
-        MapModule
+        HttpClientModule
     ],
     providers: [],
-    bootstrap: [AppComponent]
+    exports: [
+        MapComponent
+    ],
+    bootstrap: [MapComponent]
 })
-export class AppModule {
+export class MapModule {
 }
