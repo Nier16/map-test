@@ -5,6 +5,11 @@ export type Address = {
     country: string
 }
 
+export type AddressMinimalDetails = {
+    lat: number,
+    lon: number
+}
+
 export type AddressDetails = {
     place_id: number,
     licence: string,

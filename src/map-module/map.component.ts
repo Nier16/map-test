@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, Input, OnChanges, SimpleChanges, ViewChild} from '@angular/core';
-import {Browser, Map, map, tileLayer} from 'leaflet';
+import {Browser, Map, map, tileLayer, marker} from 'leaflet';
 import {AddressService} from "./shared/services/address.service";
 import {Address} from "./shared/models/adresse.model";
 
@@ -12,7 +12,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
     @ViewChild('map') private mapContainer!: ElementRef<HTMLElement>;
     @Input('address') address!: Address;
     @Input('apiKey') apiKey!: string;
-    @Input('zoom') zoom: number = 17;
+    @Input('zoom') zoom: number = 19;
 
     constructor(private addressService: AddressService) {
     }
@@ -31,7 +31,7 @@ export class MapComponent implements OnChanges, AfterViewInit {
 
     recalculate() {
         if (this.mapContainer && this.address && this.apiKey) {
-            this.addressService.getAddressDetails(this.address).subscribe(addressDetails => {
+            this.addressService.getAddressDetailsGouv(this.address).subscribe(addressDetails => {
                 this.initMap(addressDetails.lon, addressDetails.lat, this.zoom);
             });
         }
@@ -51,7 +51,24 @@ export class MapComponent implements OnChanges, AfterViewInit {
         const retinaUrl =
                 'https://maps.geoapify.com/v1/tile/osm-bright/{z}/{x}/{y}@2x.png?apiKey={apiKey}';
 
-        tileLayer(isRetina ? retinaUrl : baseUrl, {
+       /* tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+            maxZoom: 30
+        }).addTo(lefletMap);
+
+        */
+
+        var GeoportailFrance_orthos = tileLayer('https://wxs.ign.fr/{apikey}/geoportail/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE={style}&TILEMATRIXSET=PM&FORMAT={format}&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}', {
+            attribution: '<a target="_blank" href="https://www.geoportail.gouv.fr/">Geoportail France</a>',
+            bounds: [[-75, -180], [81, 180]],
+            minZoom: 2,
+            maxZoom: 19,
+            apikey: 'choisirgeoportail',
+            format: 'image/jpeg',
+            style: 'normal'
+        } as any).addTo(lefletMap);
+
+        /*tileLayer(isRetina ? retinaUrl : baseUrl, {
             attribution:
                     'Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | <a href="https://openmaptiles.org/" target="_blank">© OpenMapTiles</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap</a> contributors',
             // This API key is for use only in stackblitz.com
@@ -61,5 +78,9 @@ export class MapComponent implements OnChanges, AfterViewInit {
             maxZoom: 20,
             id: 'osm-bright',
         } as any).addTo(lefletMap);
+
+         */
+
+        marker([initialState.lat, initialState.lng]).addTo(lefletMap);
     }
 }
